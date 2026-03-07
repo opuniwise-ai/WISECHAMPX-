@@ -1,0 +1,294 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<title>WISECHAMPX Registration ⚽</title>
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<script src="https://js.paystack.co/v1/inline.js"></script>
+
+<style>
+/* Body & general */
+body {
+    background: #0D1B2A;
+    color: #E0E1DD;
+    font-family: Arial, sans-serif;
+    padding: 10px;
+    margin: 0;
+}
+h1 {
+    text-align: center;
+    color: #00FFC3;
+    font-size: 2em;
+}
+label {
+    display: block;
+    margin-top: 15px;
+    font-weight: bold;
+}
+input, select {
+    width: 100%;
+    padding: 10px;
+    margin-top: 5px;
+    border-radius: 8px;
+    border: 1px solid #00FFC3;
+    background: #1B263B;
+    color: white;
+    font-size: 1em;
+}
+button {
+    width: 100%;
+    padding: 15px;
+    margin-top: 20px;
+    background: linear-gradient(45deg,#00FFC3,#1E90FF);
+    border: none;
+    border-radius: 10px;
+    font-size: 18px;
+    cursor: pointer;
+    transition: transform 0.2s;
+}
+button:hover { transform: scale(1.05); }
+/* Splash Screen */
+.splash {
+    position: fixed;
+    inset: 0;
+    background: #0D1B2A;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    z-index: 3000;
+}
+.big-logo { font-size: 70px; font-weight: bold; color: #F0A500; }
+.built {
+    position: absolute; bottom: 20px; left: 20px; color: #1DE9B6;
+}
+/* Top Logo */
+.logo-circle {
+    width: 50px; height: 50px;
+    background: linear-gradient(45deg,#00FFC3,#1E90FF);
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-weight: bold;
+    animation: spin 5s linear infinite;
+    font-size: 1.2em;
+}
+@keyframes spin { from {transform: rotate(0deg);} to {transform: rotate(360deg);} }
+/* Modals */
+.success-modal, .teamlist-modal, .advert-modal {
+    display: none;
+    position: fixed; inset: 0;
+    background: rgba(0,0,0,0.85);
+    align-items: center; justify-content: center;
+    z-index: 5000;
+}
+.success-card, .teamlist-card, .advert-card {
+    background: #1B263B;
+    padding: 25px;
+    border-radius: 15px;
+    width: 90%; max-width: 400px;
+    text-align: center;
+    font-size: 1em;
+}
+.teamlist-card div { max-height: 250px; overflow-y: auto; text-align: left; margin-top: 10px; }
+@media (min-width: 600px){
+    input, select { font-size: 1.1em; }
+    button { font-size: 1.1em; }
+    h1 { font-size: 2.2em; }
+}
+</style>
+</head>
+<body>
+
+<!-- Splash Screen -->
+<div id="splashScreen" class="splash">
+    <h1>WISECHAMPX LEAGUES</h1>
+    <div class="big-logo">WX</div>
+    <p class="built">BUILT BY : WISE OPUNI</p>
+</div>
+
+<!-- Top Logo -->
+<div class="top-logo" style="text-align:center; margin-bottom:20px;">
+    <div class="logo-circle">WX</div>
+</div>
+
+<h1>WISECHAMPX REGISTRATION ⚽</h1>
+
+<!-- Sequential Leagues -->
+<label>SELECT LEAGUE:</label>
+<select id="leagueSelect">
+    <option value="premier">WISECHAMPX Premier League</option>
+    <option value="laliga">WISECHAMPX LaLiga</option>
+    <option value="bundesliga">WISECHAMPX Bundesliga</option>
+    <option value="seriea">WISECHAMPX Serie A</option>
+    <option value="ligue1">WISECHAMPX Ligue 1</option>
+</select>
+
+<!-- Special Leagues -->
+<label>SPECIAL LEAGUES:</label>
+<select id="specialLeague">
+    <option value="">--Optional--</option>
+    <option value="champions">WISECHAMPX Champions League</option>
+    <option value="stephens">WISE-STEV League</option>
+    <option value="advert">Normal/Advertisement (GHS 10)</option>
+</select>
+
+<label>FULL NAME:</label>
+<input type="text" id="fullName" placeholder="Your Full Name">
+
+<label>TEAM NAME:</label>
+<input type="text" id="teamName" placeholder="Your Team">
+
+<label>EMAIL:</label>
+<input type="email" id="email" placeholder="Your Email">
+
+<label>PHONE:</label>
+<input type="tel" id="phone" placeholder="Your Phone Number">
+
+<label>SELECT COUNTRY:</label>
+<select id="country">
+    <option value="">--Choose Country--</option>
+    <option value="ghana">GHANA🇬🇭</option>
+    <option value="nigeria">NIGERIA🇳🇬</option>
+    <option value="kenya">KENYA🇰🇪</option>
+    <option value="southafrica">SOUTH AFRICA🇿🇦</option>
+    <option value="zambia">ZAMBIA🇿🇲</option>
+</select>
+
+<div id="fee-prizes"></div>
+
+<button id="payButton">PAY NOW 💳</button>
+<button id="showTeamsBtn">View Live Teams</button>
+
+<!-- Success Modal -->
+<div id="successModal" class="success-modal">
+    <div class="success-card">
+        <div class="logo-circle small">WX</div>
+        <h2>🎉 Registration Successful!</h2>
+        <div id="receiptContent"></div>
+        <button onclick="closeModal()">Close</button>
+    </div>
+</div>
+
+<!-- Live Teams Modal -->
+<div id="teamlistModal" class="teamlist-modal">
+    <div class="teamlist-card">
+        <h2>Live Team List</h2>
+        <div id="liveTeamsContent"></div>
+        <button onclick="closeTeamModal()">Close</button>
+    </div>
+</div>
+
+<!-- Advertisement Modal -->
+<div id="advertModal" class="advert-modal">
+    <div class="advert-card">
+        <h2>Advertisement Registration</h2>
+        <p>Pay GHS 10 to register your team under Advertisement.</p>
+        <button id="advertPayBtn">Pay Now 💳</button>
+        <button onclick="closeAdvertModal()">Close</button>
+    </div>
+</div>
+
+<script>
+// Splash
+window.onload = function(){ setTimeout(()=>{document.getElementById("splashScreen").style.display="none";},3000); };
+
+// League/Prizes
+const capacity={ premier:20,laliga:20,bundesliga:20,seriea:20,ligue1:20, champions:24, stephens:Infinity, advert:Infinity };
+const prizes={
+    premier:{entry:25,winner:300,runner1:30,runner2:20,runner3:0},
+    laliga:{entry:25,winner:300,runner1:30,runner2:20,runner3:0},
+    bundesliga:{entry:25,winner:300,runner1:30,runner2:20,runner3:0},
+    seriea:{entry:25,winner:250,runner1:20,runner2:10,runner3:0},
+    ligue1:{entry:25,winner:250,runner1:20,runner2:10,runner3:0},
+    champions:{entry:40,winner:500,runner1:50,runner2:30,runner3:20},
+    stephens:{entry:15,winner:150,runner1:20,runner2:10,runner3:0},
+    advert:{entry:10,winner:0,runner1:0,runner2:0,runner3:0}
+};
+
+// Count
+function getCount(l){ return parseInt(localStorage.getItem(l))||0; }
+function increaseCount(l){ let c=getCount(l)+1; if(c>capacity[l] && capacity[l]!==Infinity){ c=1; } localStorage.setItem(l,c); return c; }
+const conversionRates={ghana:1,nigeria:52,kenya:46,southafrica:3,zambia:13};
+
+function updateFeePrizes(){
+    const league=document.getElementById("specialLeague").value||document.getElementById("leagueSelect").value;
+    const country=document.getElementById("country").value;
+    if(!league||!country){ document.getElementById("fee-prizes").innerHTML=''; return; }
+    const prize=prizes[league]; const rate=conversionRates[country];
+    let remaining=capacity[league]===Infinity?'Unlimited':capacity[league]-getCount(league);
+    document.getElementById("fee-prizes").innerHTML=`
+        <p>Entry Fee: ${(prize.entry*rate).toLocaleString()} ${country.toUpperCase()}</p>
+        <p>Winner Prize: ${(prize.winner*rate).toLocaleString()} ${country.toUpperCase()}</p>
+        <p>1st Runner-Up: ${(prize.runner1*rate).toLocaleString()} ${country.toUpperCase()}</p>
+        <p>2nd Runner-Up: ${(prize.runner2*rate).toLocaleString()} ${country.toUpperCase()}</p>
+        <p>3rd Runner-Up: ${(prize.runner3*rate).toLocaleString()} ${country.toUpperCase()}</p>
+        <p>Remaining Slots: ${remaining}</p>
+    `;
+}
+document.getElementById("leagueSelect").addEventListener("change",updateFeePrizes);
+document.getElementById("specialLeague").addEventListener("change",updateFeePrizes);
+document.getElementById("country").addEventListener("change",updateFeePrizes);
+
+// Live teams
+let liveTeams=JSON.parse(localStorage.getItem('liveTeams')||'[]');
+
+const paystackPublicKey="pk_test_c9332c3e94a07f135a49f6ec6708fb7d3be83990";
+document.getElementById("payButton").addEventListener("click",function(){
+    const name=document.getElementById("fullName").value.trim();
+    const team=document.getElementById("teamName").value.trim();
+    const email=document.getElementById("email").value.trim();
+    const phone=document.getElementById("phone").value.trim();
+    let league=document.getElementById("specialLeague").value||document.getElementById("leagueSelect").value;
+    const country=document.getElementById("country").value;
+
+    if(!name||!team||!email||!phone||!league||!country){ alert("Please fill all fields before payment!"); return; }
+
+    // Sequential league logic
+    if(['premier','laliga','bundesliga','seriea','ligue1'].includes(league)){
+        let seq=['premier','laliga','bundesliga','seriea','ligue1'];
+        for(let i=0;i<seq.length;i++){ if(getCount(seq[i])<capacity[seq[i]]){ league=seq[i]; break; } }
+    }
+
+    const leagueData=prizes[league]; const amount=leagueData.entry*100; const reference='WCX-'+Date.now();
+
+    let handler=PaystackPop.setup({
+        key:paystackPublicKey, email, amount, currency:"GHS", ref:reference,
+        callback:function(response){
+            const teamNumber=increaseCount(league);
+            liveTeams.push({name,team,league}); localStorage.setItem('liveTeams',JSON.stringify(liveTeams));
+            document.getElementById("receiptContent").innerHTML=`
+                Name: ${name}<br>
+                Team: ${team}<br>
+                League: ${league.toUpperCase()}<br>
+                Team Number: ${teamNumber}<br>
+                Entry Fee: GHS ${leagueData.entry}<br>
+                Reference: ${response.reference}
+            `;
+            document.getElementById("successModal").style.display="flex";
+
+            const message=`Congratulations ${name}!\nYour team "${team}" has been successfully registered for ${league.toUpperCase()}.\nTeam Number: ${teamNumber}\nEntry Fee: GHS ${leagueData.entry}\nGood luck!`;
+            window.open(`https://wa.me/${phone}?text=${encodeURIComponent(message)}`,'_blank');
+
+            updateFeePrizes();
+        },
+        onClose:function(){ alert("Payment cancelled."); }
+    });
+    handler.openIframe();
+});
+
+// Live teams modal
+document.getElementById("showTeamsBtn").addEventListener("click",()=>{
+    let html=''; liveTeams.forEach((t,i)=>{ html+=`${i+1}. ${t.team} (${t.name}) - ${t.league.toUpperCase()}<br>`; });
+    document.getElementById("liveTeamsContent").innerHTML=html||'No teams yet.';
+    document.getElementById("teamlistModal").style.display='flex';
+});
+
+function closeModal(){ document.getElementById("successModal").style.display="none"; }
+function closeTeamModal(){ document.getElementById("teamlistModal").style.display="none"; }
+function closeAdvertModal(){ document.getElementById("advertModal").style.display="none"; }
+
+</script>
+</body>
+</html>
