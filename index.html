@@ -2,46 +2,45 @@
 <html lang="en">
 <head>
 <meta charset="UTF-8">
-<title>WISECHAMPX Registration ⚽</title>
+<title>WISECHAMPX Registration </title>
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <script src="https://js.paystack.co/v1/inline.js"></script>
+<!-- Firebase -->
+<script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-app-compat.js"></script>
+<script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-firestore-compat.js"></script>
 
 <style>
 body { background: #0D1B2A; color: #E0E1DD; font-family: Arial, sans-serif; padding: 10px; margin: 0; }
-h1 { text-align: center; color: #00FFC3; font-size: 2em; }
+h1 { text-align: center; color: #00FFC3; font-size: 2em; margin-bottom: 15px; }
 label { display: block; margin-top: 15px; font-weight: bold; }
 input, select { width: 100%; padding: 10px; margin-top: 5px; border-radius: 8px; border: 1px solid #00FFC3; background: #1B263B; color: white; font-size: 1em; }
 button { width: 100%; padding: 15px; margin-top: 20px; background: linear-gradient(45deg,#00FFC3,#1E90FF); border: none; border-radius: 10px; font-size: 18px; cursor: pointer; transition: transform 0.2s; }
 button:hover { transform: scale(1.05); }
-/* Splash */
 .splash { position: fixed; inset: 0; background: #0D1B2A; display: flex; flex-direction: column; align-items: center; justify-content: center; z-index: 3000; }
 .big-logo { font-size: 70px; font-weight: bold; color: #F0A500; }
 .built { position: absolute; bottom: 20px; left: 20px; color: #1DE9B6; }
-/* Top Logo */
 .logo-circle { width: 50px; height: 50px; background: linear-gradient(45deg,#00FFC3,#1E90FF); border-radius: 50%; display: flex; align-items: center; justify-content: center; font-weight: bold; animation: spin 5s linear infinite; font-size: 1.2em; }
 @keyframes spin { from {transform: rotate(0deg);} to {transform: rotate(360deg);} }
-/* Modals */
 .success-modal, .teamlist-modal, .advert-modal { display: none; position: fixed; inset: 0; background: rgba(0,0,0,0.85); align-items: center; justify-content: center; z-index: 5000; }
-.success-card, .teamlist-card, .advert-card { background: #1B263B; padding: 25px; border-radius: 15px; width: 90%; max-width: 400px; text-align: center; font-size: 1em; }
+.success-card, .teamlist-card, .advert-card { background: #1B263B; padding: 20px; border-radius: 15px; width: 90%; max-width: 400px; text-align: center; font-size: 0.9em; }
 .teamlist-card div { max-height: 250px; overflow-y: auto; text-align: left; margin-top: 10px; }
+.fee-card { background: #1B263B; border: 2px solid #00FFC3; border-radius: 10px; padding: 6px; margin: 5px 0; display: flex; justify-content: space-between; align-items: center; font-size: 0.85em; color: #E0E1DD; user-select: none; }
 @media (min-width: 600px){ input, select { font-size: 1.1em; } button { font-size: 1.1em; } h1 { font-size: 2.2em; } }
 </style>
 </head>
 <body>
 
-<!-- Splash -->
 <div id="splashScreen" class="splash">
     <h1>WISECHAMPX LEAGUES</h1>
     <div class="big-logo">WX</div>
     <p class="built">BUILT BY : WISE OPUNI</p>
 </div>
 
-<!-- Top Logo -->
 <div class="top-logo" style="text-align:center; margin-bottom:20px;">
     <div class="logo-circle">WX</div>
 </div>
 
-<h1>WISECHAMPX REGISTRATION ⚽</h1>
+<h1>WISECHAMPX REGISTRATION </h1>
 
 <label>SELECT LEAGUE:</label>
 <select id="leagueSelect">
@@ -56,132 +55,147 @@ button:hover { transform: scale(1.05); }
 <select id="specialLeague">
     <option value="">--Optional--</option>
     <option value="champions">WISECHAMPX Champions League</option>
-    <option value="stephens">WISE-STEV League</option>
+    <option value="stephens">WISE-STEVO League</option>
     <option value="advert">Normal/Advertisement (GHS 10)</option>
 </select>
 
 <label>FULL NAME:</label><input type="text" id="fullName" placeholder="Your Full Name">
 <label>TEAM NAME:</label><input type="text" id="teamName" placeholder="Your Team">
 <label>EMAIL:</label><input type="email" id="email" placeholder="Your Email">
-<label>PHONE:</label><input type="tel" id="phone" placeholder="Your Phone Number">
+
+<label>PHONE:</label>
+<div style="display:flex; gap:5px;">
+    <select id="countryCode" style="width:30%;">
+        <option value="+233">GH +233</option>
+        <option value="+234">NG +234</option>
+        <option value="+254">KE +254</option>
+        <option value="+27">ZA +27</option>
+        <option value="+260">ZM +260</option>
+    </select>
+    <input type="tel" id="phone" placeholder="Your Phone Number" style="width:70%;">
+</div>
+
 <label>SELECT COUNTRY:</label>
 <select id="country">
     <option value="">--Choose Country--</option>
-    <option value="ghana">GHANA🇬🇭</option>
-    <option value="nigeria">NIGERIA🇳🇬</option>
-    <option value="kenya">KENYA🇰🇪</option>
-    <option value="southafrica">SOUTH AFRICA🇿🇦</option>
-    <option value="zambia">ZAMBIA🇿🇲</option>
+    <option value="ghana">GHANA</option>
+    <option value="nigeria">NIGERIA</option>
+    <option value="kenya">KENYA</option>
+    <option value="southafrica">SOUTH AFRICA</option>
+    <option value="zambia">ZAMBIA</option>
 </select>
 
 <div id="fee-prizes"></div>
-<button id="payButton">PAY NOW 💳</button>
+<button id="payButton">PAY NOW </button>
 <button id="showTeamsBtn">View Live Teams</button>
 
-<!-- Success Modal -->
 <div id="successModal" class="success-modal">
     <div class="success-card">
         <div class="logo-circle small">WX</div>
-        <h2>🎉 Registration Successful!</h2>
+        <h2> Registration Successful!</h2>
         <div id="receiptContent"></div>
         <button onclick="closeModal()">Close</button>
     </div>
 </div>
 
-<!-- Live Teams Modal -->
 <div id="teamlistModal" class="teamlist-modal">
     <div class="teamlist-card">
         <h2>Live Team List</h2>
-        <div id="liveTeamsContent"></div>
+        <div id="liveTeamsContent">Loading...</div>
         <button onclick="closeTeamModal()">Close</button>
     </div>
 </div>
 
-<!-- Advertisement Modal -->
 <div id="advertModal" class="advert-modal">
     <div class="advert-card">
         <h2>Advertisement Registration</h2>
         <p>Pay GHS 10 to register your team under Advertisement.</p>
-        <button id="advertPayBtn">Pay Now 💳</button>
+        <button id="advertPayBtn">Pay Now </button>
         <button onclick="closeAdvertModal()">Close</button>
     </div>
 </div>
 
 <script>
+// FIREBASE CONFIG
+const firebaseConfig = {
+  apiKey: "AIzaSyAIB_b4VYvIPY-RDdD8xglK57W6Q9xCDjQ",
+  authDomain: "wisechampx-56ba5.firebaseapp.com",
+  projectId: "wisechampx-56ba5",
+  storageBucket: "wisechampx-56ba5.firebasestorage.app",
+  messagingSenderId: "1013956062517",
+  appId: "1:1013956062517:web:091af55b914c0aa1ee307c"
+};
+firebase.initializeApp(firebaseConfig);
+const db = firebase.firestore();
+
 // Splash
 window.addEventListener('load', ()=>{ setTimeout(()=>{document.getElementById("splashScreen").style.display="none";},3000); });
 
-// League Data
+// LEAGUE DATA
 const capacity={ premier:20,laliga:20,bundesliga:20,seriea:20,ligue1:20, champions:24, stephens:Infinity, advert:Infinity };
 const prizes={
-    premier:{entry:25,winner:300,runner1:30,runner2:20,runner3:0},
-    laliga:{entry:25,winner:300,runner1:30,runner2:20,runner3:0},
-    bundesliga:{entry:25,winner:300,runner1:30,runner2:20,runner3:0},
-    seriea:{entry:25,winner:250,runner1:20,runner2:10,runner3:0},
-    ligue1:{entry:25,winner:250,runner1:20,runner2:10,runner3:0},
-    champions:{entry:40,winner:500,runner1:50,runner2:30,runner3:20},
-    stephens:{entry:15,winner:150,runner1:20,runner2:10,runner3:0},
+    premier:{entry:30,winner:350,runner1:30,runner2:20,runner3:0},
+    laliga:{entry:30,winner:300,runner1:30,runner2:20,runner3:0},
+    bundesliga:{entry:30,winner:300,runner1:30,runner2:20,runner3:0},
+    seriea:{entry:30,winner:250,runner1:20,runner2:10,runner3:0},
+    ligue1:{entry:30,winner:250,runner1:20,runner2:10,runner3:0},
+    champions:{entry:45,winner:500,runner1:50,runner2:30,runner3:20},
+    stephens:{entry:20,winner:150,runner1:20,runner2:10,runner3:0},
     advert:{entry:10,winner:0,runner1:0,runner2:0,runner3:0}
 };
 const conversionRates={ghana:1,nigeria:52,kenya:46,southafrica:3,zambia:13};
 
-// Safe LocalStorage Counts
-function getCount(l){ return parseInt(localStorage.getItem(l))||0; }
-function increaseCount(l){
-    let c=getCount(l)+1;
-    if(c>capacity[l] && capacity[l]!==Infinity){ alert(`${l.toUpperCase()} league is full! Choose another league.`); return null; }
-    localStorage.setItem(l,c);
-    return c;
-}
+// LIVE TEAMS REFERENCE
+const liveTeamsRef = db.collection("registrations");
+let liveTeams=[];
 
-// Fee display
+// Fee Display
 function updateFeePrizes(){
     const league=document.getElementById("specialLeague").value||document.getElementById("leagueSelect").value;
     const country=document.getElementById("country").value;
     if(!league || !country){ document.getElementById("fee-prizes").innerHTML=''; return; }
     const prize=prizes[league]; const rate=conversionRates[country];
-    let remaining=capacity[league]===Infinity?'Unlimited':capacity[league]-getCount(league);
-    document.getElementById("fee-prizes").innerHTML=`
-        <p>Entry Fee: ${(prize.entry*rate).toLocaleString()} ${country.toUpperCase()}</p>
-        <p>Winner Prize: ${(prize.winner*rate).toLocaleString()} ${country.toUpperCase()}</p>
-        <p>1st Runner-Up: ${(prize.runner1*rate).toLocaleString()} ${country.toUpperCase()}</p>
-        <p>2nd Runner-Up: ${(prize.runner2*rate).toLocaleString()} ${country.toUpperCase()}</p>
-        <p>3rd Runner-Up: ${(prize.runner3*rate).toLocaleString()} ${country.toUpperCase()}</p>
-        <p>Remaining Slots: ${remaining}</p>
-    `;
+    let html='';
+    html += `<div class="fee-card"><p>Entry Fee:</p><p>GHS ${(prize.entry*rate).toLocaleString()}</p></div>`;
+    html += `<div class="fee-card"><p>Winner Prize:</p><p>GHS ${(prize.winner*rate).toLocaleString()}</p></div>`;
+    html += `<div class="fee-card"><p>1st Runner-Up:</p><p>GHS ${(prize.runner1*rate).toLocaleString()}</p></div>`;
+    html += `<div class="fee-card"><p>2nd Runner-Up:</p><p>GHS ${(prize.runner2*rate).toLocaleString()}</p></div>`;
+    html += `<div class="fee-card"><p>3rd Runner-Up:</p><p>GHS ${(prize.runner3*rate).toLocaleString()}</p></div>`;
+    html += `<div class="fee-card"><p>Remaining Slots:</p><p id="remainingSlots">Loading...</p></div>`;
+    document.getElementById("fee-prizes").innerHTML=html;
 }
 document.getElementById("leagueSelect").addEventListener("change",updateFeePrizes);
 document.getElementById("specialLeague").addEventListener("change",updateFeePrizes);
 document.getElementById("country").addEventListener("change",updateFeePrizes);
 
-// Live teams
-let liveTeams=JSON.parse(localStorage.getItem('liveTeams')||'[]');
-
-// Paystack Payment
+// PAYSTACK PAYMENT
 const paystackPublicKey="pk_test_c9332c3e94a07f135a49f6ec6708fb7d3be83990";
-document.getElementById("payButton").addEventListener("click",function(){
+document.getElementById("payButton").addEventListener("click", async function(){
     const name=document.getElementById("fullName").value.trim();
     const team=document.getElementById("teamName").value.trim();
     const email=document.getElementById("email").value.trim();
     const phone=document.getElementById("phone").value.trim();
+    const countryCode=document.getElementById("countryCode").value;
     let league=document.getElementById("specialLeague").value||document.getElementById("leagueSelect").value;
     const country=document.getElementById("country").value;
 
     if(!name||!team||!email||!phone||!league||!country){ alert("Please fill all fields before payment!"); return; }
 
-    // Sequential league logic
-    if(['premier','laliga','bundesliga','seriea','ligue1'].includes(league)){
-        if(getCount(league)>=capacity[league]){ alert(`${league.toUpperCase()} league is full! Choose another.`); return; }
-    }
+    const snapshot = await liveTeamsRef.where("league","==",league).get();
+    const teamNumber = snapshot.size + 1;
+    if(capacity[league]!==Infinity && teamNumber>capacity[league]){ alert(`${league.toUpperCase()} league is full!`); return; }
 
-    const leagueData=prizes[league]; const amount=leagueData.entry*100; const reference='WCX-'+Date.now();
+    const leagueData=prizes[league]; 
+    const amount=leagueData.entry*100; 
+    const reference='WCX-'+Date.now();
 
     let handler=PaystackPop.setup({
         key:paystackPublicKey, email, amount, currency:"GHS", ref:reference,
         callback:function(response){
-            const teamNumber=increaseCount(league);
-            if(teamNumber===null) return;
-            liveTeams.push({name,team,league}); localStorage.setItem('liveTeams',JSON.stringify(liveTeams));
+            liveTeamsRef.add({name,team,league,country,teamNumber,reference})
+            .then(()=>console.log("Saved to Firebase!"))
+            .catch(err=>console.error("Firebase Error:",err));
+
             document.getElementById("receiptContent").innerHTML=`
                 Name: ${name}<br>
                 Team: ${team}<br>
@@ -193,7 +207,7 @@ document.getElementById("payButton").addEventListener("click",function(){
             document.getElementById("successModal").style.display="flex";
 
             let formattedPhone = phone.replace(/\D/g,'');
-            if(!formattedPhone.startsWith('+')) formattedPhone = '+233'+formattedPhone;
+            if(!formattedPhone.startsWith('+')) formattedPhone = countryCode + formattedPhone;
             const message=`Congratulations ${name}!\nYour team "${team}" registered for ${league.toUpperCase()}.\nTeam Number: ${teamNumber}\nEntry Fee: GHS ${leagueData.entry}\nGood luck!`;
             window.open(`https://wa.me/${formattedPhone}?text=${encodeURIComponent(message)}`,'_blank');
 
@@ -204,23 +218,47 @@ document.getElementById("payButton").addEventListener("click",function(){
     handler.openIframe();
 });
 
-// Live teams modal
-document.getElementById("showTeamsBtn").addEventListener("click",()=>{
-    let html=''; liveTeams.forEach((t,i)=>{ html+=`${i+1}. ${t.team} (${t.name}) - ${t.league.toUpperCase()}<br>`; });
-    document.getElementById("liveTeamsContent").innerHTML=html||'No teams yet.';
-    document.getElementById("teamlistModal").style.display='flex';
+// LIVE TEAMS REAL-TIME
+liveTeamsRef.onSnapshot(snapshot=>{
+    liveTeams=[];
+    snapshot.forEach(doc=>liveTeams.push(doc.data()));
+
+    // Update remaining slots
+    const league=document.getElementById("specialLeague").value||document.getElementById("leagueSelect").value;
+    if(league && document.getElementById("remainingSlots")){
+        let count = liveTeams.filter(t=>t.league===league).length;
+        let remaining = capacity[league]===Infinity?'Unlimited':capacity[league]-count;
+        document.getElementById("remainingSlots").innerText = remaining;
+    }
 });
 
-// Advert modal listener
+// SHOW TEAMS BUTTON FIX
+document.getElementById("showTeamsBtn").addEventListener("click", async () => {
+    const snapshot = await liveTeamsRef.get();
+    let html = '';
+    if(snapshot.empty){
+        html = 'No teams yet.';
+    } else {
+        snapshot.forEach((doc,i)=>{
+            const t = doc.data();
+            html += `${i+1}. ${t.team} (${t.name}) - ${t.league.toUpperCase()}<br>`;
+        });
+    }
+    document.getElementById("liveTeamsContent").innerHTML = html;
+    document.getElementById("teamlistModal").style.display = 'flex';
+});
+
+// ADVERT
 document.getElementById("advertPayBtn").addEventListener("click",()=>{
     document.getElementById("specialLeague").value='advert';
     document.getElementById("payButton").click();
 });
 
-// Close modals
+// MODAL CLOSE
 function closeModal(){ document.getElementById("successModal").style.display="none"; }
 function closeTeamModal(){ document.getElementById("teamlistModal").style.display="none"; }
 function closeAdvertModal(){ document.getElementById("advertModal").style.display="none"; }
+
 </script>
 </body>
 </html>
