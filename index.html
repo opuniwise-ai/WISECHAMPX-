@@ -2,7 +2,7 @@
 <html lang="en">
 <head>
 <meta charset="UTF-8">
-<title>WISECHAMPX Registration </title>
+<title>WISECHAMPX Registration ⚽</title>
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <script src="https://js.paystack.co/v1/inline.js"></script>
 <!-- Firebase -->
@@ -40,7 +40,7 @@ button:hover { transform: scale(1.05); }
     <div class="logo-circle">WX</div>
 </div>
 
-<h1>WISECHAMPX REGISTRATION </h1>
+<h1>WISECHAMPX REGISTRATION ⚽</h1>
 
 <label>SELECT LEAGUE:</label>
 <select id="leagueSelect">
@@ -78,21 +78,21 @@ button:hover { transform: scale(1.05); }
 <label>SELECT COUNTRY:</label>
 <select id="country">
     <option value="">--Choose Country--</option>
-    <option value="ghana">GHANA</option>
-    <option value="nigeria">NIGERIA</option>
-    <option value="kenya">KENYA</option>
-    <option value="southafrica">SOUTH AFRICA</option>
-    <option value="zambia">ZAMBIA</option>
+    <option value="ghana">GHANA 🇬🇭</option>
+    <option value="nigeria">NIGERIA 🇳🇬</option>
+    <option value="kenya">KENYA 🇰🇪</option>
+    <option value="southafrica">SOUTH AFRICA 🇿🇦</option>
+    <option value="zambia">ZAMBIA 🇿🇲</option>
 </select>
 
 <div id="fee-prizes"></div>
-<button id="payButton">PAY NOW </button>
+<button id="payButton">PAY NOW 💳</button>
 <button id="showTeamsBtn">View Live Teams</button>
 
 <div id="successModal" class="success-modal">
     <div class="success-card">
         <div class="logo-circle small">WX</div>
-        <h2> Registration Successful!</h2>
+        <h2>🎉 Registration Successful!</h2>
         <div id="receiptContent"></div>
         <button onclick="closeModal()">Close</button>
     </div>
@@ -110,7 +110,7 @@ button:hover { transform: scale(1.05); }
     <div class="advert-card">
         <h2>Advertisement Registration</h2>
         <p>Pay GHS 10 to register your team under Advertisement.</p>
-        <button id="advertPayBtn">Pay Now </button>
+        <button id="advertPayBtn">Pay Now 💳</button>
         <button onclick="closeAdvertModal()">Close</button>
     </div>
 </div>
@@ -131,39 +131,52 @@ const db = firebase.firestore();
 // Splash
 window.addEventListener('load', ()=>{ setTimeout(()=>{document.getElementById("splashScreen").style.display="none";},3000); });
 
+// CURRENCY CONVERSIONS (official rates approx.)
+const exchangeRates = { ghana: 1, nigeria: 128.67, kenya: 12, southafrica: 1.67, zambia: 1.83 };
+
+// CURRENCY SYMBOLS
+const currencySymbols = { ghana:'GHS', nigeria:'₦', kenya:'KES', southafrica:'ZAR', zambia:'ZMW' };
+
 // LEAGUE DATA
 const capacity={ premier:20,laliga:20,bundesliga:20,seriea:20,ligue1:20, champions:24, stephens:Infinity, advert:Infinity };
-const prizes={
-    premier:{entry:30,winner:350,runner1:30,runner2:20,runner3:0},
-    laliga:{entry:30,winner:300,runner1:30,runner2:20,runner3:0},
-    bundesliga:{entry:30,winner:300,runner1:30,runner2:20,runner3:0},
-    seriea:{entry:30,winner:250,runner1:20,runner2:10,runner3:0},
-    ligue1:{entry:30,winner:250,runner1:20,runner2:10,runner3:0},
-    champions:{entry:45,winner:500,runner1:50,runner2:30,runner3:20},
-    stephens:{entry:20,winner:150,runner1:20,runner2:10,runner3:0},
-    advert:{entry:10,winner:0,runner1:0,runner2:0,runner3:0}
-};
-const conversionRates={ghana:1,nigeria:52,kenya:46,southafrica:3,zambia:13};
 
-// LIVE TEAMS REFERENCE
+// PRIZES in GHS
+const prizesGHS={
+  premier:{entry:30,winner:350,runner1:30,runner2:15,runner3:0},
+  laliga:{entry:30,winner:300,runner1:30,runner2:15,runner3:0},
+  bundesliga:{entry:30,winner:300,runner1:30,runner2:15,runner3:0},
+  seriea:{entry:30,winner:250,runner1:30,runner2:15,runner3:0},
+  ligue1:{entry:30,winner:250,runner1:30,runner2:15,runner3:0},
+  champions:{entry:45,winner:500,runner1:50,runner2:30,runner3:20},
+  stephens:{entry:15,winner:150,runner1:30,runner2:15,runner3:0},
+  advert:{entry:10,winner:0,runner1:0,runner2:0,runner3:0}
+};
+
 const liveTeamsRef = db.collection("registrations");
 let liveTeams=[];
 
-// Fee Display
+// Update Fee & Prizes display
 function updateFeePrizes(){
-    const league=document.getElementById("specialLeague").value||document.getElementById("leagueSelect").value;
-    const country=document.getElementById("country").value;
-    if(!league || !country){ document.getElementById("fee-prizes").innerHTML=''; return; }
-    const prize=prizes[league]; const rate=conversionRates[country];
-    let html='';
-    html += `<div class="fee-card"><p>Entry Fee:</p><p>GHS ${(prize.entry*rate).toLocaleString()}</p></div>`;
-    html += `<div class="fee-card"><p>Winner Prize:</p><p>GHS ${(prize.winner*rate).toLocaleString()}</p></div>`;
-    html += `<div class="fee-card"><p>1st Runner-Up:</p><p>GHS ${(prize.runner1*rate).toLocaleString()}</p></div>`;
-    html += `<div class="fee-card"><p>2nd Runner-Up:</p><p>GHS ${(prize.runner2*rate).toLocaleString()}</p></div>`;
-    html += `<div class="fee-card"><p>3rd Runner-Up:</p><p>GHS ${(prize.runner3*rate).toLocaleString()}</p></div>`;
-    html += `<div class="fee-card"><p>Remaining Slots:</p><p id="remainingSlots">Loading...</p></div>`;
-    document.getElementById("fee-prizes").innerHTML=html;
+  const league = document.getElementById("specialLeague").value || document.getElementById("leagueSelect").value;
+  const country = document.getElementById("country").value;
+  if(!league||!country){document.getElementById("fee-prizes").innerHTML=''; return;}
+
+  const prize = prizesGHS[league];
+  const rate = exchangeRates[country];
+  const symbol = currencySymbols[country];
+  const format = x=> (x*rate).toLocaleString();
+
+  let html='';
+  html += `<div class="fee-card"><p>Entry Fee:</p><p>${symbol} ${format(prize.entry)} (~GHS ${prize.entry})</p></div>`;
+  if(prize.winner) html += `<div class="fee-card"><p>Winner Prize:</p><p>${symbol} ${format(prize.winner)} (~GHS ${prize.winner})</p></div>`;
+  if(prize.runner1) html += `<div class="fee-card"><p>1st Runner-Up:</p><p>${symbol} ${format(prize.runner1)} (~GHS ${prize.runner1})</p></div>`;
+  if(prize.runner2) html += `<div class="fee-card"><p>2nd Runner-Up:</p><p>${symbol} ${format(prize.runner2)} (~GHS ${prize.runner2})</p></div>`;
+  if(prize.runner3) html += `<div class="fee-card"><p>3rd Runner-Up:</p><p>${symbol} ${format(prize.runner3)} (~GHS ${prize.runner3})</p></div>`;
+
+  html += `<div class="fee-card"><p>Remaining Slots:</p><p id="remainingSlots">Loading...</p></div>`;
+  document.getElementById("fee-prizes").innerHTML = html;
 }
+
 document.getElementById("leagueSelect").addEventListener("change",updateFeePrizes);
 document.getElementById("specialLeague").addEventListener("change",updateFeePrizes);
 document.getElementById("country").addEventListener("change",updateFeePrizes);
@@ -171,51 +184,54 @@ document.getElementById("country").addEventListener("change",updateFeePrizes);
 // PAYSTACK PAYMENT
 const paystackPublicKey="pk_test_c9332c3e94a07f135a49f6ec6708fb7d3be83990";
 document.getElementById("payButton").addEventListener("click", async function(){
-    const name=document.getElementById("fullName").value.trim();
-    const team=document.getElementById("teamName").value.trim();
-    const email=document.getElementById("email").value.trim();
-    const phone=document.getElementById("phone").value.trim();
-    const countryCode=document.getElementById("countryCode").value;
-    let league=document.getElementById("specialLeague").value||document.getElementById("leagueSelect").value;
-    const country=document.getElementById("country").value;
+  const name=document.getElementById("fullName").value.trim();
+  const team=document.getElementById("teamName").value.trim();
+  const email=document.getElementById("email").value.trim();
+  const phone=document.getElementById("phone").value.trim();
+  const countryCode=document.getElementById("countryCode").value;
+  let league=document.getElementById("specialLeague").value||document.getElementById("leagueSelect").value;
+  const country=document.getElementById("country").value;
 
-    if(!name||!team||!email||!phone||!league||!country){ alert("Please fill all fields before payment!"); return; }
+  if(!name||!team||!email||!phone||!league||!country){ alert("Please fill all fields before payment!"); return; }
 
-    const snapshot = await liveTeamsRef.where("league","==",league).get();
-    const teamNumber = snapshot.size + 1;
-    if(capacity[league]!==Infinity && teamNumber>capacity[league]){ alert(`${league.toUpperCase()} league is full!`); return; }
+  const snapshot = await liveTeamsRef.where("league","==",league).get();
+  const teamNumber = snapshot.size + 1;
+  if(capacity[league]!==Infinity && teamNumber>capacity[league]){ alert(`${league.toUpperCase()} league is full!`); return; }
 
-    const leagueData=prizes[league]; 
-    const amount=leagueData.entry*100; 
-    const reference='WCX-'+Date.now();
+  const amount = prizesGHS[league].entry*100; // Always pay GHS
+  const reference='WCX-'+Date.now();
 
-    let handler=PaystackPop.setup({
-        key:paystackPublicKey, email, amount, currency:"GHS", ref:reference,
-        callback:function(response){
-            liveTeamsRef.add({name,team,league,country,teamNumber,reference})
-            .then(()=>console.log("Saved to Firebase!"))
-            .catch(err=>console.error("Firebase Error:",err));
+  let handler=PaystackPop.setup({
+      key: paystackPublicKey,
+      email,
+      amount,
+      currency: "GHS",
+      ref: reference,
+      callback:function(response){
+          liveTeamsRef.add({name,team,league,country,teamNumber,reference})
+          .then(()=>console.log("Saved to Firebase!"))
+          .catch(err=>console.error("Firebase Error:",err));
 
-            document.getElementById("receiptContent").innerHTML=`
-                Name: ${name}<br>
-                Team: ${team}<br>
-                League: ${league.toUpperCase()}<br>
-                Team Number: ${teamNumber}<br>
-                Entry Fee: GHS ${leagueData.entry}<br>
-                Reference: ${response.reference}
-            `;
-            document.getElementById("successModal").style.display="flex";
+          document.getElementById("receiptContent").innerHTML=`
+              Name: ${name}<br>
+              Team: ${team}<br>
+              League: ${league.toUpperCase()}<br>
+              Team Number: ${teamNumber}<br>
+              Entry Fee: GHS ${prizesGHS[league].entry}<br>
+              Reference: ${response.reference}
+          `;
+          document.getElementById("successModal").style.display="flex";
 
-            let formattedPhone = phone.replace(/\D/g,'');
-            if(!formattedPhone.startsWith('+')) formattedPhone = countryCode + formattedPhone;
-            const message=`Congratulations ${name}!\nYour team "${team}" registered for ${league.toUpperCase()}.\nTeam Number: ${teamNumber}\nEntry Fee: GHS ${leagueData.entry}\nGood luck!`;
-            window.open(`https://wa.me/${formattedPhone}?text=${encodeURIComponent(message)}`,'_blank');
+          let formattedPhone = phone.replace(/\D/g,'');
+          if(!formattedPhone.startsWith('+')) formattedPhone = countryCode + formattedPhone;
+          const message=`Congratulations ${name}!\nYour team "${team}" registered for ${league.toUpperCase()}.\nTeam Number: ${teamNumber}\nEntry Fee: GHS ${prizesGHS[league].entry}\nGood luck!`;
+          window.open(`https://wa.me/${formattedPhone}?text=${encodeURIComponent(message)}`,'_blank');
 
-            updateFeePrizes();
-        },
-        onClose:function(){ alert("Payment cancelled."); }
-    });
-    handler.openIframe();
+          updateFeePrizes();
+      },
+      onClose:function(){ alert("Payment cancelled."); }
+  });
+  handler.openIframe();
 });
 
 // LIVE TEAMS REAL-TIME
@@ -223,7 +239,6 @@ liveTeamsRef.onSnapshot(snapshot=>{
     liveTeams=[];
     snapshot.forEach(doc=>liveTeams.push(doc.data()));
 
-    // Update remaining slots
     const league=document.getElementById("specialLeague").value||document.getElementById("leagueSelect").value;
     if(league && document.getElementById("remainingSlots")){
         let count = liveTeams.filter(t=>t.league===league).length;
@@ -232,13 +247,11 @@ liveTeamsRef.onSnapshot(snapshot=>{
     }
 });
 
-// SHOW TEAMS BUTTON FIX
+// SHOW TEAMS BUTTON
 document.getElementById("showTeamsBtn").addEventListener("click", async () => {
     const snapshot = await liveTeamsRef.get();
     let html = '';
-    if(snapshot.empty){
-        html = 'No teams yet.';
-    } else {
+    if(snapshot.empty){ html = 'No teams yet.'; } else {
         snapshot.forEach((doc,i)=>{
             const t = doc.data();
             html += `${i+1}. ${t.team} (${t.name}) - ${t.league.toUpperCase()}<br>`;
